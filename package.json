@@ -1,0 +1,47 @@
+{
+  "name": "@splitimage/engine",
+  "version": "0.1.0",
+  "description": "UI-free image splitting, crop geometry, cover padding, seam detection and ZIP export.",
+  "type": "module",
+  "license": "MIT",
+  "homepage": "https://splitimage.io/",
+  "exports": {
+    ".": "./src/index.js"
+  },
+  "scripts": {
+    "test": "node --test test/*.test.js",
+    "test:browser": "playwright test",
+    "check": "npm test && npm run test:browser",
+    "prepack": "npm test"
+  },
+  "keywords": [
+    "image-splitter",
+    "canvas",
+    "browser",
+    "privacy",
+    "zip",
+    "instagram-grid",
+    "carousel",
+    "vanilla-js"
+  ],
+  "files": [
+    "src/",
+    "README.md",
+    "LICENSE",
+    "CHANGELOG.md"
+  ],
+  "sideEffects": false,
+  "engines": {
+    "node": ">=22"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.63.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/WanderZil/splitimage-engine.git"
+  },
+  "bugs": {
+    "url": "https://github.com/WanderZil/splitimage-engine/issues"
+  }
+}
