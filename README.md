@@ -30,24 +30,18 @@ The source image is 4:5 (1440 × 1800). The Instagram profile grid uses a 3:4 cr
 
 The demo photo was supplied by the repository maintainer from an Instagram post shared by [@tadejpogacar](https://www.instagram.com/tadejpogacar/). Rights to the photo remain with its owner; it is included here only as a demo and is not covered by this project's MIT license.
 
-## Social image ratios used by this engine
+## Social formats and online tools
 
-These are practical export presets implemented by this project. Platform layouts can change; check the preview in the target app before publishing.
+Common working ratios used by this engine; platform display rules can change, so check the preview before publishing. TikTok's linked pixel sizes are for carousel ads, not a universal requirement for organic posts.
 
-- **Instagram profile grid (3 × 3):** 3 columns × 3 rows; each tile is 3:4 (for example, 1080 × 1440 px). The complete connected artwork is also 3:4. Instagram crops each post in the profile grid, so keep important content inside the visible crop.
-- **Instagram carousel panorama:** 4:5 per slide (for example, 1080 × 1350 px). For *N* slides arranged as one continuous image, prepare a source canvas with a 4N:5 ratio; keep every exported slide at the same size.
-- **TikTok connected profile grid (3 × 3):** prepare a 3:4 connected composition. Each uploaded tile is padded to 9:16 (for example, 1080 × 1920 px); the center 3:4 region aligns across the profile grid while the extra top and bottom are visible in the full-screen post.
-- **TikTok photo carousel:** vertical 9:16 is the recommended starting point. TikTok for Business currently lists 720 × 1280 px vertical, 640 × 640 px square, and 1200 × 628 px landscape for *carousel ads*; these are ad specifications, not a universal requirement for organic posts. [TikTok carousel ad specifications](https://ads.tiktok.com/resources/help/article/specifications-for-carousel-ads?lang=en) · [TikTok image-ad playbook](https://ads.tiktok.com/business/library/Image_Ads_Carousel_Ads_Playbook.pdf)
+| Platform and use | Common ratio and example size | SplitImage.io tool |
+| --- | --- | --- |
+| Instagram profile grid (3 × 3) | 3:4 connected canvas; each tile 3:4 (1080 × 1440 px) | [Instagram Grid Maker](https://splitimage.io/instagram-grid-maker/) |
+| Instagram panorama carousel | 4:5 per slide (1080 × 1350 px); *N* slides form a 4N:5 source canvas | [Instagram Carousel Splitter](https://splitimage.io/instagram-carousel-splitter/) |
+| TikTok profile puzzle (1 × 3 banner or 3 × 3 grid) | 3:4 connected profile crop; each post exports at 9:16 (1080 × 1920 px) | [TikTok Banner Splitter](https://splitimage.io/tiktok-banner-splitter/) |
+| TikTok photo carousel | Vertical 9:16 is a common starting point; carousel-ad examples: 720 × 1280 px vertical, 640 × 640 px square, or 1200 × 628 px landscape | [Browse online tools](https://splitimage.io/) |
 
-## Online tools
-
-For ready-to-use browser tools built with this engine:
-
-- [Instagram Grid Maker](https://splitimage.io/instagram-grid-maker/) — split a photo into connected profile-grid tiles.
-- [TikTok Banner Splitter](https://splitimage.io/tiktok-banner-splitter/) — create a three-part profile banner.
-- [Instagram Carousel Splitter](https://splitimage.io/instagram-carousel-splitter/) — turn a wide image into sequential carousel slides.
-
-The library below provides the processing APIs; the website provides the editing interface.
+These are practical export presets, not platform guarantees. TikTok's example pixel sizes come from its [carousel ad specifications](https://ads.tiktok.com/resources/help/article/specifications-for-carousel-ads?lang=en), not a universal requirement for organic posts. The library provides image-processing APIs; the linked website provides the editing interface.
 
 ## Use the source
 
