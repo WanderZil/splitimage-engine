@@ -15,6 +15,30 @@ This is the MIT-licensed image processing library used by SplitImage.io. The web
 - PNG, JPEG and WebP output, numbered tiles, and uncompressed ZIP archives.
 - No components, styles, application state, download buttons or analytics.
 
+## Demo: one photo, a connected Instagram grid
+
+The original portrait is split into nine connected tiles. The second image is a real Instagram profile screenshot showing the published grid.
+
+<table>
+  <tr>
+    <td align="center" width="50%"><strong>Original photo</strong><br><img src="https://raw.githubusercontent.com/WanderZil/splitimage-engine/main/assets/demo-original.webp" alt="Original portrait photo of a cyclist at the Tour de France finish" width="360"></td>
+    <td align="center" width="50%"><strong>Published 3 × 3 Instagram grid</strong><br><img src="https://raw.githubusercontent.com/WanderZil/splitimage-engine/main/assets/demo-instagram-grid.webp" alt="Real Instagram profile screenshot showing the photo split across a 3 by 3 grid" width="360"></td>
+  </tr>
+</table>
+
+The source image is 4:5 (1440 × 1800). The Instagram profile grid uses a 3:4 crop for each tile, so a 3 × 3 composition has a 3:4 overall canvas. The crop can be repositioned to keep the subject in frame.
+
+The demo photo was supplied by the repository maintainer from an Instagram post shared by [@tadejpogacar](https://www.instagram.com/tadejpogacar/). Rights to the photo remain with its owner; it is included here only as a demo and is not covered by this project's MIT license.
+
+## Social image ratios used by this engine
+
+These are practical export presets implemented by this project. Platform layouts can change; check the preview in the target app before publishing.
+
+- **Instagram profile grid (3 × 3):** 3 columns × 3 rows; each tile is 3:4 (for example, 1080 × 1440 px). The complete connected artwork is also 3:4. Instagram crops each post in the profile grid, so keep important content inside the visible crop.
+- **Instagram carousel panorama:** 4:5 per slide (for example, 1080 × 1350 px). For *N* slides arranged as one continuous image, prepare a source canvas with a 4N:5 ratio; keep every exported slide at the same size.
+- **TikTok connected profile grid (3 × 3):** prepare a 3:4 connected composition. Each uploaded tile is padded to 9:16 (for example, 1080 × 1920 px); the center 3:4 region aligns across the profile grid while the extra top and bottom are visible in the full-screen post.
+- **TikTok photo carousel:** vertical 9:16 is the recommended starting point. TikTok for Business currently lists 720 × 1280 px vertical, 640 × 640 px square, and 1200 × 628 px landscape for *carousel ads*; these are ad specifications, not a universal requirement for organic posts. [TikTok carousel ad specifications](https://ads.tiktok.com/resources/help/article/specifications-for-carousel-ads?lang=en) · [TikTok image-ad playbook](https://ads.tiktok.com/business/library/Image_Ads_Carousel_Ads_Playbook.pdf)
+
 ## Online tools
 
 For ready-to-use browser tools built with this engine:
@@ -164,7 +188,7 @@ npm run test:browser
 npm pack --dry-run
 ```
 
-`npm run check` runs unit and browser tests. Tests generate their own images; no brand artwork or website screenshots are included. The browser test server serves only an empty test document and engine modules. See [CONTRIBUTING.md](CONTRIBUTING.md) for the contribution boundary.
+`npm run check` runs unit and browser tests. Tests generate their own images. The `assets/` folder contains only the two images shown in the demo above; the Instagram screenshot and source photo are demonstration material, not part of the MIT-licensed engine code. The browser test server serves only an empty test document and engine modules. See [CONTRIBUTING.md](CONTRIBUTING.md) for the contribution boundary.
 
 ## License
 
