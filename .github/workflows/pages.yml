@@ -1,0 +1,33 @@
+name: Browser demo
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/configure-pages@v5
+      - name: Prepare public demo files
+        run: |
+          mkdir -p _site/demo _site/src _site/assets
+          cp demo/index.html demo/app.js demo/style.css _site/demo/
+          cp src/*.js _site/src/
+          cp assets/demo-original.webp _site/assets/
+          touch _site/.nojekyll
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: _site
+      - id: deployment
+        uses: actions/deploy-pages@v4

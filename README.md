@@ -4,7 +4,7 @@
 
 A UI-free JavaScript library for splitting images in the browser. It provides grid and crop geometry, Canvas rendering, cover padding, seam detection and ZIP export, with no runtime dependencies.
 
-This is the MIT-licensed image processing library used by SplitImage.io. The website's interface, marketing copy, preview artwork, brand assets and server code are **not** included or licensed by this repository. This library does not reproduce the complete website.
+This is the MIT-licensed image processing library used by SplitImage.io. The website's interface, marketing copy, preview artwork, brand assets and server code are **not** included or licensed by this repository. The small `demo/` example exercises the public library without reproducing the website interface.
 
 ## Scope
 
@@ -13,7 +13,7 @@ This is the MIT-licensed image processing library used by SplitImage.io. The web
 - Top/bottom or side padding using a solid color, blurred source pixels or a background image.
 - Pixel-based seam detection for stitched images; this is a heuristic, not an AI model.
 - PNG, JPEG and WebP output, numbered tiles, and uncompressed ZIP archives.
-- No components, styles, application state, download buttons or analytics.
+- No website components, application state or analytics in `src/`; the standalone `demo/` provides a small example interface.
 
 ## Demo: one photo, a connected Instagram grid
 
@@ -29,6 +29,15 @@ The original portrait is split into nine connected tiles. The second image is a 
 The source image is 4:5 (1440 × 1800). The Instagram profile grid uses a 3:4 crop for each tile, so a 3 × 3 composition has a 3:4 overall canvas. The crop can be repositioned to keep the subject in frame.
 
 The demo photo was supplied by the repository maintainer from an Instagram post shared by [@tadejpogacar](https://www.instagram.com/tadejpogacar/). Rights to the photo remain with its owner; it is included here only as a demo and is not covered by this project's MIT license.
+
+To try the browser example locally:
+
+```sh
+npm ci
+npm run demo
+```
+
+Open `http://127.0.0.1:5191/demo/`. Upload an image or use the included sample; choose a 3:4 connected post, a 4:5 feed post, or a 9:16 Reels cover. For 4:5 and 9:16, choose solid color, blurred source, or an uploaded background. Switch between the profile grid, the actual exported tile and the original image. The ZIP contains the same rendered tile blobs shown in the preview. This self-contained example is intentionally much smaller than the [full online tool](https://splitimage.io/instagram-grid-maker/).
 
 ## Social formats and online tools
 

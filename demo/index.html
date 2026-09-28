@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SplitImage Engine · Browser demo</title>
+  <link rel="stylesheet" href="./style.css">
+  <script type="module" src="./app.js"></script>
+</head>
+<body>
+  <main>
+    <header>
+      <p class="eyebrow">Open-source processing demo</p>
+      <h1>SplitImage Engine</h1>
+      <p>Preview a connected profile grid and the exact images in its ZIP. Processing stays in your browser.</p>
+    </header>
+    <div class="workspace">
+      <section class="panel controls" aria-label="Image settings">
+        <h2>Image settings</h2>
+        <label class="upload">Choose an image<input id="source" type="file" accept="image/*"><span id="file-name">A sample image is loaded</span></label>
+        <label>Grid
+          <select id="layout"><option value="3x3">3 × 3 · nine tiles</option><option value="1x3">1 × 3 · one row</option><option value="2x3">2 × 3 · six tiles</option></select>
+        </label>
+        <details class="crop-settings"><summary>Adjust source crop</summary>
+          <label>Zoom <input id="crop-zoom" type="range" min="100" max="200" value="100"><output id="zoom-value">100%</output></label>
+          <label>Move horizontally <input id="crop-x" type="range" min="-100" max="100" value="0"></label>
+          <label>Move vertically <input id="crop-y" type="range" min="-100" max="100" value="0"></label>
+        </details>
+        <label>Export format
+          <select id="output-ratio"><option value="3:4">3:4 · connected post</option><option value="4:5">4:5 · feed post</option><option value="9:16">9:16 · Reels cover</option></select>
+        </label>
+        <fieldset id="fill-settings" disabled>
+          <legend>Fill outside the 3:4 profile area</legend>
+          <label>Fill mode
+            <select id="fill-mode"><option value="color">Solid color</option><option value="blur">Blurred image</option><option value="image">Uploaded background</option></select>
+          </label>
+          <label id="color-control">Color <input id="fill-color" type="color" value="#000000"></label>
+          <label id="blur-control" hidden>Blur amount <input id="blur-strength" type="range" min="0" max="100" value="60"><output id="blur-value">60%</output></label>
+          <label id="background-control" hidden>Background image <input id="background" type="file" accept="image/*"></label>
+          <div id="background-position" hidden>
+            <label>Move background horizontally <input id="background-x" type="range" min="-100" max="100" value="0"></label>
+            <label>Move background vertically <input id="background-y" type="range" min="-100" max="100" value="0"></label>
+          </div>
+        </fieldset>
+        <label>Download format
+          <select id="format"><option value="png">PNG</option><option value="jpeg">JPEG</option><option value="webp">WebP</option></select>
+        </label>
+        <button id="download" type="button" disabled>Download ZIP</button>
+        <p id="status" role="status" aria-live="polite">Preparing sample…</p>
+      </section>
+      <section class="panel previews" aria-label="Live preview">
+        <div class="preview-heading"><h2>Live preview</h2><div class="tabs" role="group" aria-label="Preview view"><button type="button" data-view="profile" aria-pressed="true">Profile grid</button><button type="button" data-view="export" aria-pressed="false">Exported tile</button><button type="button" data-view="original" aria-pressed="false">Original</button></div></div>
+        <p id="preview-note">The profile crops each exported tile to its central 3:4 area.</p>
+        <div id="profile-preview" class="profile-preview" aria-label="Profile grid preview"></div>
+        <div id="export-preview" class="single-preview" hidden><img id="export-image" alt="Center tile as exported"><p id="export-size"></p></div>
+        <div id="original-preview" class="single-preview" hidden><img id="original-image" alt="Original uploaded image"></div>
+      </section>
+    </div>
+    <p class="footer">Powered by the <a href="https://github.com/WanderZil/splitimage-engine">MIT-licensed engine</a>. Try the full <a href="https://splitimage.io/instagram-grid-maker/">Instagram Grid Maker</a> online.</p>
+  </main>
+</body>
+</html>
