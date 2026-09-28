@@ -37,7 +37,7 @@ npm ci
 npm run demo
 ```
 
-Open `http://127.0.0.1:5191/demo/`. Upload an image or use the included sample; choose a 3:4 connected post, a 4:5 feed post, or a 9:16 Reels cover. For 4:5 and 9:16, choose solid color, blurred source, or an uploaded background. Switch between the profile grid, the actual exported tile and the original image. The ZIP contains the same rendered tile blobs shown in the preview. This self-contained example is intentionally much smaller than the [full online tool](https://splitimage.io/instagram-grid-maker/).
+Open `http://127.0.0.1:5191/demo/`. Until you choose an image, the profile grid shows a short introduction to splitimage.io. Choose Post grid or Reels cover, then 3:4 stitch or 4:5 post. The profile grid always shows the connected 3:4 area. For a 4:5 post or 9:16 Reels cover, choose solid color, blurred source, or an uploaded background; the fill preview shows the center exported tile. The ZIP contains those exported tiles. This self-contained example is intentionally much smaller than the [full online tool](https://splitimage.io/instagram-grid-maker/).
 
 ## Social formats and online tools
 
@@ -191,7 +191,7 @@ npm run test:browser
 npm pack --dry-run
 ```
 
-`npm run check` runs unit and browser tests. Tests generate their own images. The `assets/` folder contains only the two images shown in the demo above; the Instagram screenshot and source photo are demonstration material, not part of the MIT-licensed engine code. The browser test server serves only an empty test document and engine modules. See [CONTRIBUTING.md](CONTRIBUTING.md) for the contribution boundary.
+`npm run check` runs unit and browser tests. Tests generate their own images. The `assets/` folder contains the demo photo, the published-grid screenshot, and the Instagram phone shell used by the browser demo. Those images are demonstration material, not part of the MIT-licensed engine code. The browser test server serves only an empty test document and engine modules. See [CONTRIBUTING.md](CONTRIBUTING.md) for the contribution boundary.
 
 ## License
 

@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 780 1040" role="img">
+  <title>splitimage.io</title>
+  <rect width="780" height="1040" fill="#f8fafc"/>
+  <g stroke="#e2e8f0" stroke-width="2">
+    <path d="M260 80V960M520 80V960M40 373H740M40 666H740"/>
+  </g>
+  <rect x="40" y="80" width="700" height="880" fill="none" stroke="#e2e8f0" stroke-width="2"/>
+  <g transform="translate(330 250)">
+    <rect width="120" height="120" rx="28" fill="#3b82f6"/>
+    <g fill="#fff">
+      <rect x="22" y="22" width="20" height="20" rx="4"/>
+      <rect x="50" y="22" width="20" height="20" rx="4"/>
+      <rect x="78" y="22" width="20" height="20" rx="4"/>
+      <rect x="22" y="50" width="20" height="20" rx="4"/>
+      <rect x="50" y="50" width="20" height="20" rx="4"/>
+      <rect x="78" y="50" width="20" height="20" rx="4"/>
+      <rect x="22" y="78" width="20" height="20" rx="4"/>
+      <rect x="50" y="78" width="20" height="20" rx="4"/>
+      <rect x="78" y="78" width="20" height="20" rx="4"/>
+    </g>
+  </g>
+  <text x="390" y="470" text-anchor="middle" fill="#0f172a" font-family="Inter, system-ui, sans-serif" font-size="58" font-weight="700">splitimage.io</text>
+  <text x="390" y="560" text-anchor="middle" fill="#334155" font-family="Inter, system-ui, sans-serif" font-size="32" font-weight="500">Split one photo into a</text>
+  <text x="390" y="608" text-anchor="middle" fill="#334155" font-family="Inter, system-ui, sans-serif" font-size="32" font-weight="500">connected profile grid.</text>
+  <text x="390" y="680" text-anchor="middle" fill="#64748b" font-family="Inter, system-ui, sans-serif" font-size="26">Processing stays in your browser.</text>
+</svg>
