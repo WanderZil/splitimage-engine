@@ -1,7 +1,7 @@
 {
   "name": "@splitimage/engine",
   "version": "0.1.0",
-  "description": "UI-free image splitting, crop geometry, cover padding, seam detection and ZIP export.",
+  "description": "Browser image-splitting engine for grids, carousels, cover padding and ZIP export.",
   "type": "module",
   "license": "MIT",
   "homepage": "https://splitimage.io/",

@@ -1,10 +1,10 @@
 # SplitImage Engine
 
-[Online website](https://splitimage.io/) · [MIT license](LICENSE)
+[Try the browser demo](https://wanderzil.github.io/splitimage-engine/demo/) · [Online website](https://splitimage.io/) · [MIT license](LICENSE)
 
-A UI-free JavaScript library for splitting images in the browser. It provides grid and crop geometry, Canvas rendering, cover padding, seam detection and ZIP export, with no runtime dependencies.
+SplitImage Engine is a JavaScript image-processing library with a standalone browser demo. The library in `src/` provides grid and crop geometry, Canvas rendering, cover padding, seam detection and ZIP export without runtime dependencies. The `demo/` directory contains a small interface for trying those features.
 
-This is the MIT-licensed image processing library used by SplitImage.io. The website's interface, marketing copy, preview artwork, brand assets and server code are **not** included or licensed by this repository. The small `demo/` example exercises the public library without reproducing the website interface.
+The engine is used by [SplitImage.io](https://splitimage.io/). This repository includes its own demo interface and demonstration media, but not the full website application, marketing content or server code. The demo media has separate rights from the MIT-licensed code; see [License](#license).
 
 ## Scope
 
@@ -13,7 +13,7 @@ This is the MIT-licensed image processing library used by SplitImage.io. The web
 - Top/bottom or side padding using a solid color, blurred source pixels or a background image.
 - Pixel-based seam detection for stitched images; this is a heuristic, not an AI model.
 - PNG, JPEG and WebP output, numbered tiles, and uncompressed ZIP archives.
-- No website components, application state or analytics in `src/`; the standalone `demo/` provides a small example interface.
+- The reusable `src/` library is separate from application state and analytics; `demo/` shows one way to build an interface around it.
 
 ## Demo: one photo, a connected Instagram grid
 
@@ -30,7 +30,7 @@ The source image is 4:5 (1440 × 1800). The Instagram profile grid uses a 3:4 cr
 
 The demo photo was supplied by the repository maintainer from an Instagram post shared by [@tadejpogacar](https://www.instagram.com/tadejpogacar/). Rights to the photo remain with its owner; it is included here only as a demo and is not covered by this project's MIT license.
 
-To try the browser example locally:
+Try the [browser demo](https://wanderzil.github.io/splitimage-engine/demo/), or run it locally:
 
 ```sh
 npm ci
@@ -50,7 +50,7 @@ Common working ratios used by this engine; platform display rules can change, so
 | TikTok profile puzzle (1 × 3 banner or 3 × 3 grid) | 3:4 connected profile crop; each post exports at 9:16 (1080 × 1920 px) | [TikTok Banner Splitter](https://splitimage.io/tiktok-banner-splitter/) |
 | TikTok photo carousel | Vertical 9:16 is a common starting point; carousel-ad examples: 720 × 1280 px vertical, 640 × 640 px square, or 1200 × 628 px landscape | [Browse online tools](https://splitimage.io/) |
 
-These are practical export presets, not platform guarantees. TikTok's example pixel sizes come from its [carousel ad specifications](https://ads.tiktok.com/resources/help/article/specifications-for-carousel-ads?lang=en), not a universal requirement for organic posts. The library provides image-processing APIs; the linked website provides the editing interface.
+These are practical export presets, not platform guarantees. TikTok's example pixel sizes come from its [carousel ad specifications](https://ads.tiktok.com/resources/help/article/specifications-for-carousel-ads?lang=en), not a universal requirement for organic posts. The `src/` library provides image-processing APIs, this repository's demo provides a small interactive example, and the linked website provides the full editing experience.
 
 ## Use the source
 
@@ -191,8 +191,8 @@ npm run test:browser
 npm pack --dry-run
 ```
 
-`npm run check` runs unit and browser tests. Tests generate their own images. The `assets/` folder contains the demo photo, the published-grid screenshot, and the Instagram phone shell used by the browser demo. Those images are demonstration material, not part of the MIT-licensed engine code. The browser test server serves only an empty test document and engine modules. See [CONTRIBUTING.md](CONTRIBUTING.md) for the contribution boundary.
+`npm run check` runs unit and browser tests. Tests generate their own images. The `assets/` folder contains the demo photo, the published-grid screenshot, and media used by the browser demo. These images are demonstration material, not part of the MIT-licensed engine code. The browser test server serves the local demo and engine modules. See [CONTRIBUTING.md](CONTRIBUTING.md) for the contribution boundary.
 
 ## License
 
-[MIT](LICENSE) applies to the files in this repository. You may reuse the engine commercially while retaining the required license notice. No website backlink is required. SplitImage.io's website UI, content and brand assets are outside this repository and this license.
+[MIT](LICENSE) applies to the engine and demo code and documentation, excluding the demonstration images in `assets/`. The demo photo and published-grid screenshot remain the property of their respective rights holders. You may reuse the engine commercially while retaining the required license notice. No website backlink is required. The full SplitImage.io website application and its content are outside this repository and license.
