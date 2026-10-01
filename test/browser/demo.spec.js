@@ -2,6 +2,40 @@ import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { test, expect } from '@playwright/test';
 
+test('tool picker changes the preview and exported tile geometry', async ({ page }) => {
+  await page.goto('/demo/');
+  await expect(page.locator('#tool-select')).toHaveValue('instagram-grid');
+  await page.locator('#tool-select').selectOption('instagram-carousel');
+  await expect(page.locator('#carousel-phone')).toBeVisible();
+  await expect(page.locator('#carousel-upload')).toBeVisible();
+  const chooserPromise = page.waitForEvent('filechooser');
+  await page.locator('#carousel-upload').click();
+  await (await chooserPromise).setFiles(path.resolve('assets/demo-original.webp'));
+  await expect(page.locator('#carousel-slide-image')).toBeVisible();
+
+  const cases = [
+    { tool: 'general', layout: '2x2', count: 4, size: '480×600', preview: '#plain-preview' },
+    { tool: 'instagram-carousel', layout: '1x5', count: 5, size: '192×240', preview: '#carousel-phone' },
+    { tool: 'tiktok-grid', layout: '3x3', count: 9, size: '300×534', preview: '#profile-preview' }
+  ];
+  for (const item of cases) {
+    await page.locator('#tool-select').selectOption(item.tool);
+    await expect(page.locator(item.preview)).toBeVisible();
+    await expect(page.locator(`[data-layout="${item.layout}"]`)).toHaveAttribute('aria-pressed', 'true');
+    await expect(page.locator('#status')).toContainText(`Ready — ${item.count} tiles`);
+    await expect(page.locator('#export-size')).toContainText(item.size);
+    await expect(page.locator('#download')).toBeEnabled();
+    if (item.tool === 'instagram-carousel') {
+      await expect(page.locator('#carousel-slide-image')).toHaveAttribute('alt', 'Carousel slide 1 of 5');
+      await page.locator('#carousel-next').click();
+      await expect(page.locator('#carousel-slide-image')).toHaveAttribute('alt', 'Carousel slide 2 of 5');
+      await expect(page.locator('#carousel-dots .active')).toHaveCount(1);
+    }
+  }
+  await expect(page.locator('#phone-shell')).toHaveAttribute('src', '../assets/tiktok-profile-preview-390.webp');
+  expect(await page.locator('#phone-shell').evaluate((image) => image.complete && image.naturalWidth > 0)).toBe(true);
+});
+
 test('demo previews the 3:4 profile grid and the 4:5 or 9:16 fill, then ZIPs those tiles', async ({ page }) => {
   await page.goto('/demo/');
   await expect(page.locator('#preview-intro')).toBeVisible();

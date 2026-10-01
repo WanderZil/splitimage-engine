@@ -24,7 +24,7 @@ jobs:
           mkdir -p _site/demo _site/src _site/assets
           cp demo/index.html demo/app.js demo/style.css _site/demo/
           cp src/*.js _site/src/
-          cp assets/demo-original.webp assets/instagram-phone-460.webp assets/instagram-phone-840.webp assets/preview-intro.svg _site/assets/
+          cp assets/demo-original.webp assets/instagram-phone-460.webp assets/instagram-phone-840.webp assets/instagram-carousel-phone-shell.webp assets/tiktok-profile-preview-390.webp assets/tiktok-profile-preview-780.webp assets/preview-intro.svg assets/logo-48.png _site/assets/
           touch _site/.nojekyll
       - uses: actions/upload-pages-artifact@v4
         with:

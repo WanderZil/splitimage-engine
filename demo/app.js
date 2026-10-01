@@ -1,6 +1,7 @@
 import {
   createZipBlob,
   getInstagramCenterTileIndex,
+  getInstagramCarouselAspectRatio,
   getInstagramDefaultCrop,
   getInstagramGridAspectRatio,
   getInstagramGridTileNumber,
@@ -13,12 +14,41 @@ import {
 const $ = (id) => document.getElementById(id);
 const colorSwatches = ['#000000', '#ffffff', '#111827', '#f5f5f4', '#0f172a', '#fafafa'];
 const profileLayouts = ['3x3', '2x3', '1x3', '3x2', '3x1'];
+const tools = {
+  'instagram-grid': {
+    title: 'Instagram Grid Maker', description: 'Split one photo into a connected profile grid. Preview 3:4, 4:5 post, and 9:16 Reels cover exports right in your browser.',
+    layouts: profileLayouts, defaultLayout: '3x3', fullName: 'Instagram Grid Maker', fullUrl: 'https://splitimage.io/instagram-grid-maker/'
+  },
+  general: {
+    title: 'Image Splitter', description: 'Split any image into evenly sized tiles. Choose a grid, preview the cuts, and download every piece in one ZIP.',
+    layouts: ['2x2', '3x3', '1x2', '2x1', '3x1'], defaultLayout: '2x2', fullName: 'Image Splitter', fullUrl: 'https://splitimage.io/'
+  },
+  'instagram-carousel': {
+    title: 'Instagram Carousel Splitter', description: 'Turn a wide image into 4:5 carousel slides. Preview the sequence and download numbered slides in posting order.',
+    layouts: ['1x3', '1x4', '1x5', '1x6', '1x7'], defaultLayout: '1x5', fullName: 'Instagram Carousel Splitter', fullUrl: 'https://splitimage.io/instagram-carousel-splitter/'
+  },
+  'tiktok-grid': {
+    title: 'TikTok Grid Maker', description: 'Make a connected TikTok profile puzzle. Preview the 3:4 profile area and export numbered 9:16 post covers.',
+    layouts: profileLayouts, defaultLayout: '3x3', fullName: 'TikTok Banner Splitter', fullUrl: 'https://splitimage.io/tiktok-banner-splitter/'
+  }
+};
+
+const themeToggle = $('theme-toggle');
+const savedTheme = localStorage.getItem('splitimage-demo-theme');
+document.documentElement.classList.toggle('dark', savedTheme === 'dark');
+themeToggle.setAttribute('aria-pressed', String(savedTheme === 'dark'));
+themeToggle.addEventListener('click', () => {
+  const dark = document.documentElement.classList.toggle('dark');
+  themeToggle.setAttribute('aria-pressed', String(dark));
+  localStorage.setItem('splitimage-demo-theme', dark ? 'dark' : 'light');
+});
 
 function emptyFill(mode) {
   return { mode, color: '#000000', blur: 60, background: null, x: 0, y: 0 };
 }
 
 const state = {
+  tool: 'instagram-grid',
   source: null,
   urls: [],
   originalUrl: null,
@@ -27,6 +57,7 @@ const state = {
   outputMode: 'post',
   postAspect: '3:4',
   layout: '3x3',
+  carouselSlide: 0,
   format: 'png',
   fill: {
     '4:5': emptyFill('blur'),
@@ -36,12 +67,49 @@ const state = {
 let renderTimer;
 
 function activeRatio() {
+  if (state.tool === 'general' || state.tool === 'instagram-carousel') return null;
+  if (state.tool === 'tiktok-grid') return '9:16';
   if (state.outputMode === 'reels') return '9:16';
   return state.postAspect === '4:5' ? '4:5' : '3:4';
 }
 
 function activeFill() {
   return state.fill[activeRatio()] || null;
+}
+
+function syncToolUI() {
+  const tool = tools[state.tool];
+  $('tool-select').value = state.tool;
+  $('tool-description').textContent = tool.description;
+  document.title = `${tool.title} Demo · SplitImage Engine`;
+  $('full-tool-link').textContent = tool.fullName;
+  $('full-tool-link').href = tool.fullUrl;
+  const social = state.tool === 'instagram-grid' || state.tool === 'tiktok-grid';
+  const tiktok = state.tool === 'tiktok-grid';
+  $('profile-preview').hidden = !social;
+  $('profile-preview').classList.toggle('tiktok-phone', tiktok);
+  $('plain-preview').hidden = state.tool !== 'general';
+  $('carousel-phone').hidden = state.tool !== 'instagram-carousel';
+  $('output-mode-setting').hidden = state.tool !== 'instagram-grid';
+  $('post-aspect').hidden = state.tool !== 'instagram-grid';
+  $('fill-settings').hidden = !social;
+  $('crop-zoom').closest('.crop-settings').hidden = state.tool === 'general';
+  document.querySelector('.controls').classList.toggle('simple-mode', !social);
+  const phoneShell = $('phone-shell');
+  phoneShell.src = tiktok ? '../assets/tiktok-profile-preview-390.webp' : '../assets/instagram-phone-460.webp';
+  phoneShell.srcset = tiktok
+    ? '../assets/tiktok-profile-preview-390.webp 390w, ../assets/tiktok-profile-preview-780.webp 780w'
+    : '../assets/instagram-phone-460.webp 460w, ../assets/instagram-phone-840.webp 840w';
+  phoneShell.sizes = tiktok ? '(max-width: 700px) 360px, 388px' : '(max-width: 700px) 360px, 420px';
+  const choices = $('grid-choices');
+  choices.replaceChildren(...tool.layouts.map((key) => {
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.dataset.layout = key;
+    button.textContent = key.replace('x', '×');
+    button.setAttribute('aria-pressed', String(key === state.layout));
+    return button;
+  }));
 }
 
 function releaseTileUrls() {
@@ -56,8 +124,8 @@ function formatPercent(value) {
 function syncControls() {
   const ratio = activeRatio();
   const fill = activeFill();
-  const reels = state.outputMode === 'reels';
-  const fillActive = ratio !== '3:4';
+  const reels = state.outputMode === 'reels' || state.tool === 'tiktok-grid';
+  const fillActive = Boolean(ratio && ratio !== '3:4');
 
   for (const button of document.querySelectorAll('[data-output-mode]')) {
     button.setAttribute('aria-pressed', String(button.dataset.outputMode === state.outputMode));
@@ -100,19 +168,27 @@ function syncControls() {
   $('fill-preview-meta').textContent = ratio === '9:16'
     ? 'Center tile · 9:16 export'
     : 'Center tile · 4:5 export';
-  $('preview-note').textContent = ratio === '3:4'
-    ? 'Each downloaded tile is the same 3:4 image shown on the profile.'
-    : ratio === '4:5'
-      ? 'Profile grid shows the center 3:4 stitch. Fill preview shows the 4:5 post, with left and right fill.'
-      : 'Profile grid shows the center 3:4 stitch. Fill preview shows the 9:16 Reels cover, with top and bottom fill.';
+  $('preview-note').textContent = state.tool === 'general'
+    ? 'Every tile follows the selected grid and keeps its portion of the source image.'
+    : state.tool === 'instagram-carousel'
+      ? 'Slides are exported left to right as matching 4:5 images.'
+      : ratio === '3:4'
+        ? 'Each downloaded tile is the same 3:4 image shown on the profile.'
+        : ratio === '4:5'
+          ? 'Profile grid shows the center 3:4 stitch. Fill preview shows the 4:5 post, with left and right fill.'
+          : 'Profile grid shows the center 3:4 stitch. Fill preview shows the 9:16 cover, with top and bottom fill.';
 }
 
 function cropFor(dimensions, layout) {
+  if (state.tool === 'general') return { left: 0, top: 0, width: 1, height: 1 };
+  const targetAspect = state.tool === 'instagram-carousel'
+    ? getInstagramCarouselAspectRatio(layout.columns)
+    : getInstagramGridAspectRatio(layout.rows, layout.columns);
   const baseCrop = getInstagramDefaultCrop(
     dimensions,
     layout.rows,
     layout.columns,
-    getInstagramGridAspectRatio(layout.rows, layout.columns)
+    targetAspect
   );
   const zoom = Number($('crop-zoom').value) / 100;
   const cropWidth = baseCrop.width / zoom;
@@ -134,17 +210,30 @@ function reelsMark() {
 }
 
 function showEmptyPreview() {
-  $('preview-intro').hidden = false;
+  const social = state.tool === 'instagram-grid' || state.tool === 'tiktok-grid';
+  $('preview-intro').hidden = state.tool !== 'instagram-grid';
+  $('tiktok-intro').hidden = state.tool !== 'tiktok-grid';
   $('phone-grid-crop').hidden = true;
+  $('plain-empty').hidden = social;
+  $('plain-image').hidden = true;
+  $('plain-grid').hidden = true;
+  $('carousel-upload').hidden = state.tool !== 'instagram-carousel';
+  $('carousel-slide-image').hidden = true;
+  $('carousel-prev').hidden = true;
+  $('carousel-next').hidden = true;
+  updateCarouselDots(getSplitLayout(state.layout).columns);
   $('fill-preview').hidden = true;
   $('export-size').textContent = '';
-  $('preview-note').textContent = 'Choose an image to see it on this profile grid.';
+  $('preview-note').textContent = social
+    ? 'Choose an image to see it on this profile grid.'
+    : 'Choose an image to preview the split.';
   $('download').disabled = true;
   $('status').textContent = 'Choose an image to start.';
 }
 
 function showProfileGrid(layout, crop) {
   $('preview-intro').hidden = true;
+  $('tiktok-intro').hidden = true;
   const cropWindow = $('phone-grid-crop');
   cropWindow.hidden = false;
   cropWindow.style.width = `${(layout.columns / 3) * 100}%`;
@@ -173,10 +262,68 @@ function showProfileGrid(layout, crop) {
   }
 }
 
+function showPlainPreview(layout, crop, dimensions) {
+  const preview = $('plain-preview');
+  preview.style.setProperty('--preview-aspect', (dimensions.width * crop.width) / (dimensions.height * crop.height));
+  $('plain-empty').hidden = true;
+  const image = $('plain-image');
+  image.hidden = false;
+  if (image.src !== state.originalUrl) image.src = state.originalUrl;
+  image.style.width = formatPercent(100 / crop.width);
+  image.style.height = formatPercent(100 / crop.height);
+  image.style.left = formatPercent(-(crop.left / crop.width) * 100);
+  image.style.top = formatPercent(-(crop.top / crop.height) * 100);
+  const lines = $('plain-grid');
+  lines.hidden = false;
+  lines.style.gridTemplateColumns = `repeat(${layout.columns}, 1fr)`;
+  lines.style.gridTemplateRows = `repeat(${layout.rows}, 1fr)`;
+  lines.replaceChildren();
+  for (let index = 0; index < layout.rows * layout.columns; index += 1) {
+    const cell = document.createElement('span');
+    const badge = document.createElement('b');
+    badge.textContent = `#${index + 1}`;
+    cell.append(badge);
+    lines.append(cell);
+  }
+}
+
+function updateCarouselDots(count) {
+  const dots = $('carousel-dots');
+  dots.replaceChildren(...Array.from({ length: count }, (_, index) => {
+    const dot = document.createElement('span');
+    dot.classList.toggle('active', index === state.carouselSlide);
+    return dot;
+  }));
+}
+
+function showCarouselSlide() {
+  if (state.tool !== 'instagram-carousel' || !state.tiles.length) return;
+  state.carouselSlide = Math.min(state.carouselSlide, state.tiles.length - 1);
+  releaseTileUrls();
+  const url = URL.createObjectURL(state.tiles[state.carouselSlide].blob);
+  state.urls.push(url);
+  $('carousel-upload').hidden = true;
+  $('carousel-slide-image').hidden = false;
+  $('carousel-slide-image').src = url;
+  $('carousel-slide-image').alt = `Carousel slide ${state.carouselSlide + 1} of ${state.tiles.length}`;
+  $('carousel-prev').hidden = false;
+  $('carousel-next').hidden = false;
+  $('carousel-prev').disabled = state.carouselSlide === 0;
+  $('carousel-next').disabled = state.carouselSlide === state.tiles.length - 1;
+  updateCarouselDots(state.tiles.length);
+}
+
 function clearExport() {
   releaseTileUrls();
   state.tiles = [];
   $('export-image').removeAttribute('src');
+  if (state.tool === 'instagram-carousel') {
+    $('carousel-slide-image').removeAttribute('src');
+    $('carousel-slide-image').hidden = true;
+    $('carousel-upload').hidden = false;
+    $('carousel-prev').hidden = true;
+    $('carousel-next').hidden = true;
+  }
   $('download').disabled = true;
 }
 
@@ -208,8 +355,9 @@ async function render() {
     const dimensions = await imageDimensions(state.source);
     if (generation !== state.generation) return;
     const crop = cropFor(dimensions, layout);
-    // The profile always shows the 3:4 stitch. Fill is a separate export preview.
-    showProfileGrid(layout, crop);
+    const social = state.tool === 'instagram-grid' || state.tool === 'tiktok-grid';
+    if (social) showProfileGrid(layout, crop);
+    else if (state.tool === 'general') showPlainPreview(layout, crop, dimensions);
 
     const ratio = activeRatio();
     const fill = activeFill();
@@ -224,9 +372,10 @@ async function render() {
     try {
       tiles = await splitImageToBlobs(state.source, {
         layoutKey: layout.key,
-        crop,
+        ...(state.tool === 'general' ? {} : { crop }),
+        ...(state.tool === 'instagram-carousel' ? { tileAspect: { width: 4, height: 5 } } : {}),
         format: state.format,
-        numberFromBottomRight: true,
+        numberFromBottomRight: social,
         postCover: ratio === '4:5',
         reelsCover: ratio === '9:16',
         paddingMode: fill?.mode || 'color',
@@ -245,20 +394,25 @@ async function render() {
     state.tiles = tiles;
     const centerIndex = getInstagramCenterTileIndex(layout.rows, layout.columns);
     const center = tiles[centerIndex];
-    const centerUrl = URL.createObjectURL(center.blob);
-    state.urls.push(centerUrl);
-    $('export-image').src = centerUrl;
+    if (state.tool === 'instagram-carousel') showCarouselSlide();
+    else {
+      const centerUrl = URL.createObjectURL(center.blob);
+      state.urls.push(centerUrl);
+      $('export-image').src = centerUrl;
+    }
     const exportBitmap = await createImageBitmap(center.blob);
     if (generation !== state.generation) {
       exportBitmap.close();
       return;
     }
-    $('export-size').textContent = `Each output tile ${exportBitmap.width}×${exportBitmap.height} px · ${ratio}`;
+    $('export-size').textContent = `Each output tile ${exportBitmap.width}×${exportBitmap.height} px${ratio ? ` · ${ratio}` : ''}`;
     exportBitmap.close();
     $('download').disabled = false;
-    $('status').textContent = ratio === '3:4'
-      ? `Ready — ${tiles.length} tiles. The ZIP matches this 3:4 profile grid.`
-      : `Ready — ${tiles.length} tiles. The ZIP matches the ${ratio} fill preview.`;
+    $('status').textContent = !social
+      ? `Ready — ${tiles.length} tiles. Download the numbered ZIP.`
+      : ratio === '3:4'
+        ? `Ready — ${tiles.length} tiles. The ZIP matches this 3:4 profile grid.`
+        : `Ready — ${tiles.length} tiles. The ZIP matches the ${ratio} fill preview.`;
   } catch (error) {
     if (generation !== state.generation) return;
     clearExport();
@@ -304,13 +458,33 @@ for (const swatch of document.querySelectorAll('[data-fill-color]')) {
     scheduleRender(true);
   });
 }
-for (const button of document.querySelectorAll('[data-layout]')) {
-  button.addEventListener('click', () => {
-    if (!profileLayouts.includes(button.dataset.layout)) return;
-    state.layout = button.dataset.layout;
-    scheduleRender(true);
-  });
-}
+$('grid-choices').addEventListener('click', (event) => {
+  const button = event.target.closest('[data-layout]');
+  if (!button || !tools[state.tool].layouts.includes(button.dataset.layout)) return;
+  state.layout = button.dataset.layout;
+  if (state.tool === 'instagram-carousel') state.carouselSlide = 0;
+  scheduleRender(true);
+});
+$('tool-select').addEventListener('change', () => {
+  if (!tools[$('tool-select').value]) return;
+  state.tool = $('tool-select').value;
+  state.layout = tools[state.tool].defaultLayout;
+  state.carouselSlide = 0;
+  $('crop-zoom').value = '100';
+  $('crop-x').value = '0';
+  $('crop-y').value = '0';
+  syncToolUI();
+  scheduleRender(true);
+});
+$('carousel-upload').addEventListener('click', () => $('source').click());
+$('carousel-prev').addEventListener('click', () => {
+  state.carouselSlide = Math.max(0, state.carouselSlide - 1);
+  showCarouselSlide();
+});
+$('carousel-next').addEventListener('click', () => {
+  state.carouselSlide = Math.min(state.tiles.length - 1, state.carouselSlide + 1);
+  showCarouselSlide();
+});
 for (const button of document.querySelectorAll('[data-nudge-axis]')) {
   button.addEventListener('click', () => {
     const fill = activeFill();
@@ -386,4 +560,5 @@ $('download').addEventListener('click', async () => {
   }
 });
 
+syncToolUI();
 showEmptyPreview();

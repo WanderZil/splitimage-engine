@@ -2,7 +2,7 @@
 
 [Try the browser demo](https://wanderzil.github.io/splitimage-engine/demo/) · [Online website](https://splitimage.io/) · [MIT license](LICENSE)
 
-SplitImage Engine is a JavaScript image-processing library with a standalone browser demo. The library in `src/` provides grid and crop geometry, Canvas rendering, cover padding, seam detection and ZIP export without runtime dependencies. The `demo/` directory contains a small interface for trying those features.
+SplitImage Engine is a JavaScript image-processing library with a standalone browser demo. The library in `src/` provides grid and crop geometry, Canvas rendering, cover padding, seam detection and ZIP export without runtime dependencies. The `demo/` directory contains a small interface for trying those features across four image splitting workflows.
 
 The engine is used by [SplitImage.io](https://splitimage.io/). This repository includes its own demo interface and demonstration media, but not the full website application, marketing content or server code. The demo media has separate rights from the MIT-licensed code; see [License](#license).
 
@@ -37,7 +37,9 @@ npm ci
 npm run demo
 ```
 
-Open `http://127.0.0.1:5191/demo/`. Until you choose an image, the profile grid shows a short introduction to splitimage.io. Choose Post grid or Reels cover, then 3:4 stitch or 4:5 post. The profile grid always shows the connected 3:4 area. For a 4:5 post or 9:16 Reels cover, choose solid color, blurred source, or an uploaded background; the fill preview shows the center exported tile. The ZIP contains those exported tiles. This self-contained example is intentionally much smaller than the [full online tool](https://splitimage.io/instagram-grid-maker/).
+Open `http://127.0.0.1:5191/demo/` after starting the demo server. Opening `demo/index.html` directly with `file://` only shows the static page because browser module security blocks its JavaScript. The tool selector at the top defaults to Instagram Grid Maker and switches between four working examples: Instagram Grid Maker, general Image Splitter, Instagram Carousel Splitter, and TikTok Grid Maker. The selected image stays in place when you switch tools. Each example updates the preview, layouts, numbering, and ZIP export to match its use case. The demo uses the same visual language as SplitImage.io's header, phone previews, and settings cards.
+
+In the Instagram grid example, choose Post grid or Reels cover, then 3:4 stitch or 4:5 post. The profile grid always shows the connected 3:4 area. For a 4:5 post or 9:16 cover, choose solid color, blurred source, or an uploaded background; the fill preview shows the center exported tile. The TikTok grid example exports numbered 9:16 covers around the connected 3:4 profile area. The carousel example uses the Instagram post phone frame for both upload and slide preview, with arrows and dots to move through equal 4:5 slides in left-to-right order. The general splitter divides the whole image without an aspect crop. These self-contained examples have fewer controls than the full online tools.
 
 ## Social formats and online tools
 
@@ -191,8 +193,8 @@ npm run test:browser
 npm pack --dry-run
 ```
 
-`npm run check` runs unit and browser tests. Tests generate their own images. The `assets/` folder contains the demo photo, the published-grid screenshot, and media used by the browser demo. These images are demonstration material, not part of the MIT-licensed engine code. The browser test server serves the local demo and engine modules. See [CONTRIBUTING.md](CONTRIBUTING.md) for the contribution boundary.
+`npm run check` runs unit and browser tests. Tests generate their own images. The `assets/` folder contains the demo photo, the published-grid screenshot, the SplitImage.io logo, Instagram and TikTok phone previews, and other media used by the browser demo. These images are demonstration or brand material, not part of the MIT-licensed engine code. The browser test server serves the local demo and engine modules. See [CONTRIBUTING.md](CONTRIBUTING.md) for the contribution boundary.
 
 ## License
 
-[MIT](LICENSE) applies to the engine and demo code and documentation, excluding the demonstration images in `assets/`. The demo photo and published-grid screenshot remain the property of their respective rights holders. You may reuse the engine commercially while retaining the required license notice. No website backlink is required. The full SplitImage.io website application and its content are outside this repository and license.
+[MIT](LICENSE) applies to the engine and demo code and documentation, excluding the demonstration and brand images in `assets/`. The demo photo and published-grid screenshot remain the property of their respective rights holders; the SplitImage.io logo is a brand asset. You may reuse the engine commercially while retaining the required license notice. No website backlink is required. The full SplitImage.io website application and its content are outside this repository and license.

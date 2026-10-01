@@ -3,27 +3,53 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>SplitImage Engine · Browser demo</title>
+  <title>Instagram Grid Maker Demo · SplitImage Engine</title>
+  <link rel="icon" href="../assets/logo-48.png" type="image/png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;750&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="./style.css">
   <script type="module" src="./app.js"></script>
 </head>
 <body>
-  <main>
-    <header>
-      <p class="eyebrow">Open-source processing demo</p>
-      <h1>SplitImage Engine</h1>
-      <p>The profile grid shows the connected 3:4 area. A 4:5 post or 9:16 Reels cover adds fill around that area, and the ZIP downloads those exported tiles. Processing stays in your browser.</p>
+  <div class="header-wrapper">
+    <header class="site-header">
+      <a class="logo-link" href="https://splitimage.io/" aria-label="SplitImage.io home">
+        <img src="../assets/logo-48.png" width="30" height="30" alt="">
+        <span>SplitImage.io</span>
+      </a>
+      <div class="header-actions">
+        <a class="header-link" href="https://github.com/WanderZil/splitimage-engine">Open-source engine</a>
+        <button id="theme-toggle" class="theme-toggle" type="button" aria-label="Toggle theme" aria-pressed="false">
+          <svg class="moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2m0 18v2M4.22 4.22l1.42 1.42m12.72 12.72l1.42 1.42M1 12h2m18 0h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+        </button>
+      </div>
     </header>
+  </div>
+  <main class="main">
+    <div class="demo-intro">
+      <span class="demo-badge">OPEN-SOURCE DEMO</span>
+      <h1><select id="tool-select" aria-label="Choose image splitter tool">
+        <option value="instagram-grid">Instagram Grid Maker</option>
+        <option value="general">Image Splitter</option>
+        <option value="instagram-carousel">Instagram Carousel Splitter</option>
+        <option value="tiktok-grid">TikTok Grid Maker</option>
+      </select></h1>
+      <p id="tool-description">Split one photo into a connected profile grid. Preview 3:4, 4:5 post, and 9:16 Reels cover exports right in your browser.</p>
+      <div class="upload">
+        <button id="choose-source" type="button">Choose an image</button>
+        <input id="source" class="sr-only" type="file" accept="image/*">
+        <span id="file-name">No image selected</span>
+      </div>
+      <p class="privacy-hint">All image processing happens locally in your browser. Images never leave your device.</p>
+    </div>
     <div class="workspace">
       <section class="panel controls" aria-label="Image settings">
-        <h2>Image settings</h2>
-        <div class="upload">
-          <button id="choose-source" type="button">Choose an image</button>
-          <input id="source" class="sr-only" type="file" accept="image/*">
-          <span id="file-name">No image selected</span>
-        </div>
+        <div class="controls-heading"><h2>Split layout</h2><button id="download" type="button" disabled>Download ZIP</button></div>
 
-        <div class="setting">
+        <div class="settings-column">
+        <div class="setting" id="output-mode-setting">
           <span class="setting-label">Output format</span>
           <div class="segmented" role="group" aria-label="Output format">
             <button type="button" data-output-mode="post" aria-pressed="true">Post grid</button>
@@ -83,9 +109,11 @@
           </div>
         </div>
 
-        <div class="setting">
+        </div>
+        <div class="grid-column">
+        <div class="setting grid-setting">
           <span class="setting-label">Split grid</span>
-          <div class="segmented grid-choices" role="group" aria-label="Split grid">
+          <div class="segmented grid-choices" id="grid-choices" role="group" aria-label="Split grid">
             <button type="button" data-layout="3x3" aria-pressed="true">3×3</button>
             <button type="button" data-layout="2x3" aria-pressed="false">2×3</button>
             <button type="button" data-layout="1x3" aria-pressed="false">1×3</button>
@@ -103,22 +131,45 @@
         <label>Download format
           <select id="format"><option value="png">PNG</option><option value="jpeg">JPEG</option><option value="webp">WebP</option></select>
         </label>
-        <button id="download" type="button" disabled>Download ZIP</button>
+        </div>
         <p id="status" role="status" aria-live="polite">Choose an image to start.</p>
       </section>
-      <section class="panel previews" aria-label="Live preview">
-        <div class="preview-heading"><h2>Live preview</h2><p id="export-size"></p></div>
+      <section class="previews" aria-label="Live preview">
+        <div class="preview-heading"><h2 class="sr-only">Live preview</h2><p id="export-size"></p></div>
         <p id="preview-note">Choose an image to see it on this profile grid.</p>
         <div class="preview-stage">
           <div class="phone" id="profile-preview">
-            <img class="phone-shell" src="../assets/instagram-phone-460.webp" srcset="../assets/instagram-phone-460.webp 460w, ../assets/instagram-phone-840.webp 840w" sizes="340px" alt="" width="920" height="1828">
+            <img class="phone-shell" id="phone-shell" src="../assets/instagram-phone-460.webp" srcset="../assets/instagram-phone-460.webp 460w, ../assets/instagram-phone-840.webp 840w" sizes="(max-width: 700px) 360px, 420px" alt="" width="920" height="1828">
             <div class="phone-grid">
               <img id="preview-intro" class="preview-intro" src="../assets/preview-intro.svg" alt="splitimage.io. Split one photo into a connected profile grid. Processing stays in your browser.">
+              <div id="tiktok-intro" class="tiktok-intro" hidden>Choose an image to preview a TikTok profile grid.</div>
               <div id="phone-grid-crop" class="phone-grid-crop" hidden>
                 <img id="grid-image" alt="Instagram profile grid" draggable="false">
                 <div id="grid-lines" class="grid-lines"></div>
               </div>
             </div>
+          </div>
+          <div class="plain-preview" id="plain-preview" hidden>
+            <span class="plain-empty" id="plain-empty">Choose an image to preview its split.</span>
+            <img id="plain-image" alt="" draggable="false" hidden>
+            <div class="plain-grid" id="plain-grid" hidden></div>
+          </div>
+          <div class="carousel-phone" id="carousel-phone" aria-label="Instagram carousel post preview" hidden>
+            <div class="carousel-frame" aria-hidden="true">
+              <div class="carousel-shell carousel-shell-top"></div>
+              <div class="carousel-frame-media-spacer"></div>
+              <div class="carousel-shell carousel-shell-bottom"><div class="carousel-dots" id="carousel-dots"></div></div>
+            </div>
+            <div class="carousel-media">
+              <button class="carousel-upload" id="carousel-upload" type="button">
+                <svg viewBox="0 0 24 24" width="38" height="38" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                <span>Choose one wide image</span>
+                <small>Preview numbered 4:5 carousel slides</small>
+              </button>
+              <img id="carousel-slide-image" alt="Carousel slide preview" hidden>
+            </div>
+            <button class="carousel-nav carousel-nav-prev" id="carousel-prev" type="button" aria-label="Previous slide" hidden>‹</button>
+            <button class="carousel-nav carousel-nav-next" id="carousel-next" type="button" aria-label="Next slide" hidden>›</button>
           </div>
           <aside id="fill-preview" class="fill-preview" hidden>
             <p class="preview-kicker" id="fill-preview-label">Fill preview</p>
@@ -128,7 +179,7 @@
         </div>
       </section>
     </div>
-    <p class="footer">Powered by the <a href="https://github.com/WanderZil/splitimage-engine">MIT-licensed engine</a>. Try the full <a href="https://splitimage.io/instagram-grid-maker/">Instagram Grid Maker</a> online.</p>
+    <p class="footer">This demo uses the <a href="https://github.com/WanderZil/splitimage-engine">MIT-licensed engine</a>. Explore the full <a id="full-tool-link" href="https://splitimage.io/instagram-grid-maker/">Instagram Grid Maker</a> on SplitImage.io.</p>
   </main>
 </body>
 </html>
